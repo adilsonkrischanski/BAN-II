@@ -1,0 +1,55 @@
+create table public.setor(
+    cod integer not null,
+    nome character varying not null,
+    PRIMARY KEY (cod)
+
+    
+);
+
+create table public.mecanico(
+    codm integer not null,
+    cpf character(11) not null unique, --como sabemos que no mundo real cpf é unico de pessoa podemos colocar que não havera repeticao, embora nao seja uma chave primaria
+    nome character varying(20) not null,
+    idade integer not null,
+    endereco character varying(20) not null,
+    cidade character varying(20) not null,
+    funcao character varying(20) not null,
+    codsetor integer not null,
+    PRIMARY KEY (codm),
+    FOREIGN KEY (codsetor) REFERENCES public.setor (cod)
+    ON UPDATE CASCADE
+);
+
+create table public.cliente(
+    codc integer not null,
+    cpf character(11) not null,
+    nome character varying(20) not null,
+    idade integer not null,
+    endereco character varying(20) not null,
+    cidade character varying(20) not null,
+    PRIMARY KEY (codc)
+
+);
+
+create table public.veiculo(
+    codv integer not null,
+    renavam character(11) not null,
+    marca character varying(10) not null,
+    modelo character varying(10) not null,
+    ano integer not null,
+    quilometragem integer not null,
+    codcliente integer not null,
+    PRIMARY KEY (codv)
+    FOREIGN KEY (codc) REFERENCES public.cliente (codc)
+);
+
+create table public.conserto(
+    codv integer not null,
+    codm integer not null,
+    data date PRIMARY key,
+    hora character varying(5), not null
+    FOREIGN KEY (codv) REFERENCES public.veiculo (codv)
+    FOREIGN KEY (codm) REFERENCES public.mecanico (codm)
+    ON UPDATE CASCADE
+);
+

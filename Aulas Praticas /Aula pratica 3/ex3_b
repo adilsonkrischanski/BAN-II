@@ -1,0 +1,128 @@
+create table public.curso(
+    sigla character(10) not null,
+    nome character varying(100) not null,
+    titulacao character varying(100) not null,
+    PRIMARY KEY (sigla)
+);
+
+create table public.aluno(
+    cpf char(11) not null,
+    nome character varying(100) not null,
+    rua character varying(255) not null,
+    numero integer not null,
+    estado character(2) not null,
+    cidade character varying(100) not null,
+    cep integer not null,
+    PRIMARY KEY (cpf)
+);
+
+create table public.inscricao(
+    matricula integer not null,
+    siglacurso character(10) not null,
+    cpf char(11) not null,
+    PRIMARY KEY (matricula),
+    FOREIGN KEY (siglacurso) REFERENCES public.curso (sigla)
+    ON UPDATE CASCADE,
+    FOREIGN KEY (cpf) REFERENCES public.aluno (cpf)
+    ON UPDATE CASCADE
+);
+
+create table public.disciplina(
+    sigla character varying(10) not null,
+    nome character varying(100) not null,
+    carga_horaria integer not  null,
+    PRIMARY KEY (sigla)
+);
+
+create table public.matricula(
+    ano date not null,
+    matricula integer not null,
+    sigla_disciplina character varying(10) not null,
+    semestre integer 
+    PRIMARY KEY (ano, matricula, sigla_disciplina, semestre),
+    FOREIGN KEY (matricula) REFERENCES public.inscricao (matricula)
+    FOREIGN KEY (sigla_disciplina) REFERENCES public.disciplina (sigla)
+
+);
+
+create table public.grade(
+    siglacurso character varying(10) not null,
+    sigladisciplina character varying(10) not null,
+    PRIMARY KEY( siglacurso),
+    PRIMARY KEY (sigladisciplina),
+    FOREIGN KEY (siglacurso) REFERENCES public.curso (sigla) ON UPDATE CASCADE,
+    FOREIGN KEY (sigladisciplina) REFERENCES public.disciplina ON UPDATE CASCADE
+);
+
+create table public.requisito(
+    siglacurso character varying(10) not null,
+    sigladisciplina character varying(10) not null,
+    siglacursoreq character varying(10) not null,
+    sigladisciplinareq character varying(10) not null,
+    PRIMARY KEY( siglacurso),
+    PRIMARY KEY (sigladisciplina),
+    PRIMARY KEY( siglacursoreq),
+    PRIMARY KEY (sigladisciplinareq),
+    FOREIGN KEY (siglacurso) REFERENCES public.curso (sigla) ON UPDATE CASCADE,
+    FOREIGN KEY (sigladisciplina) REFERENCES public.disciplina ON UPDATE CASCADE,
+    FOREIGN KEY (siglacursoreq) REFERENCES public.curso (sigla) ON UPDATE CASCADE,
+    FOREIGN KEY (sigladisciplinareq) REFERENCES public.disciplina ON UPDATE CASCADE
+
+);
+
+create table public.professor(
+    regmec integer not null,
+    nome charactervarying(100) not null,
+    rua charactervarying(225) not null,
+    numero integer not null,
+    cidade charactervarying(20) not null,
+    estado character(2) not null,
+    cep integer not null,
+    PRIMARY KEY (regmec)
+);
+
+create table public.habilitacao(
+    sigladisciplina character varying(10) not null,
+    regmec integer not null,
+    PRIMARY KEY (sigladisciplina,regmec),
+    FOREIGN KEY (sigladisciplina) REFERENCES public.disciplina (sigla) ON UPDATE CASCADE,
+    FOREIGN KEY (regmec) REFERENCES public.professor (regmec) ON UPDATE CASCADE
+
+);
+
+create table public.leciona(
+    sigladisciplina character varying(10) not null,
+    regmec integer not null,
+    ano date not null,
+    semestre integer not null,
+    PRIMARY KEY (sigladisciplina,regmec),
+    FOREIGN KEY (sigladisciplina) REFERENCES public.disciplina (sigla) ON UPDATE CASCADE,
+    FOREIGN KEY (regmec) REFERENCES public.professor (regmec) ON UPDATE CASCADE
+
+);
+
+create table public.area(
+    cod integer not null,
+    descricao charactervarying(100) not null,
+    PRIMARY KEY (cod)
+);
+
+create table public.responsavel(
+    regmec integer not null,
+    codarea integer not null,
+    PRIMARY KEY (regmec),
+    PRIMARY KEY (codarea),
+    FOREIGN KEY (regmec) REFERENCES public.professor (regmec) ON UPDATE CASCADE,
+    FOREIGN KEY (codarea) REFERENCES public.area (cod) ON UPDATE CASCADE
+
+);
+
+create table public.titulo(
+    regmec integer not null,
+    codarea integer not null,
+    datatitulacao date not null,
+    PRIMARY KEY (regmec),
+    PRIMARY KEY (codarea),
+    FOREIGN KEY (regmec) REFERENCES public.professor (regmec) ON UPDATE CASCADE,
+    FOREIGN KEY (codarea) REFERENCES public.area (cod) ON UPDATE CASCADE
+);
