@@ -159,7 +159,7 @@ end;
 $$
 language plpgsql;
 
-select cpf, count(1) from cliente group by cpf having count(1)>1
+select cp, count(1) from cliente group by cpf having count(1)>1
 select * from cliente
 
 INSERT INTO cliente VALUES (8, '20000200000', 'Fabiano', 25, 'América', 'Joinville'),
